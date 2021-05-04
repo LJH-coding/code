@@ -15,15 +15,15 @@ bool check(int m){
         if(vis[i])continue;
         if(point.size()==0){
             if(a[i]-a[i-1]<=m){
-				cnt++;
+		cnt++;
                 vis[i] = 1;
                 point.pb(a[i]);
             }
             else{
-				cnt+=2;
-				vis[0] = vis[1] = 1;
-				point.pb(a[i-1]);
-				point.pb(a[i]);
+		cnt+=2;
+		vis[0] = vis[1] = 1;
+		point.pb(a[i-1]);
+		point.pb(a[i]);
             }
         }
         if(a[i]-point.back()>m){
@@ -52,14 +52,14 @@ signed main(){
         while(l<=r){
             int m = (l+r)/2;
             if(check(m)){
-				/*
+		/*
                 cout<<m<<endl;
                 for(auto seg:point){
                     cout<<seg<<' ';
                 }
                 cout<<endl;
-				*/
-				ans = m;
+		*/
+		ans = m;
                 r = m-1;
             }
             else{
