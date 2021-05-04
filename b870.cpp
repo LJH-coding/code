@@ -11,27 +11,16 @@ bool check(int m){
     point.clear();
     memset(vis,0,sizeof(vis));
     int cnt = 0;
-    for(int i = 1;i<n;++i){
-        if(vis[i])continue;
-        if(point.size()==0){
-            if(a[i]-a[i-1]<=m){
-		cnt++;
-                vis[i] = 1;
-                point.pb(a[i]);
-            }
-            else{
-		cnt+=2;
-		vis[0] = vis[1] = 1;
-		point.pb(a[i-1]);
-		point.pb(a[i]);
-            }
-        }
-        if(a[i]-point.back()>m){
+	for(int i = 0;i<n;++i){
+		if(point.size()==0){
+			point.pb(a[i]+m);
 			cnt++;
-            vis[i] = 1;
-            point.pb(a[i]);
-        }
-    }
+		}
+		if(abs(a[i]-point.back())>m){
+			point.pb(a[i]+m);
+			cnt++;
+		}
+	}
     return cnt<=k;
 }
 signed main(){
