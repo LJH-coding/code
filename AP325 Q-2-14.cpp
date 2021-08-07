@@ -1,66 +1,103 @@
-#include<bits/stdc++.h>
-using namespace std;
-#define int long long
-#define pb push_back
-#define endl '\n'
+#include <bits/stdc++.h>
+#pragma GCC optimize("Ofast,unroll-loops,no-stack-protector,fast-math")
+#pragma GCC target("abm,bmi,bmi2,mmx,sse,sse2,sse3,ssse3,sse4,popcnt,avx,avx2,fma,tune=native")
+#pragma comment(linker, "/stack:200000000")
+#ifdef local
+#define debug(args...) qqbx(#args, args)
+template <typename ...T> void qqbx(const char *s, T ...args) {
+    int cnt = sizeof...(T);
+    ((std::cerr << "(" << s << ") = (") , ... , (std::cerr << args << (--cnt ? ", " : ")\n")));
+}
+#else
+#define debug(...) ((void)0)
+#endif // local
 #define IOS ios::sync_with_stdio(0),cin.tie(0),cout.tie(0)
-const int N = 1e5+5;
-int a[N] = {},ans[N],size[N] = {};
-vector<pair<int,int>>v;
-signed main(){
-	IOS;
-	int n,m,w;
-	cin>>n>>m>>w;
-	for(int i = 0;i<n;++i){
-		cin>>a[i];
+#define int long long
+#define double long double
+#define pb push_back
+#define all(v) begin(v),end(v)
+#define endl '\n'
+#define VI vector<int>
+#define rep(i,m,n) for(int i = m;i<=n;++i)
+#define res(i,m,n) for(int i = m;i>=n;--i)
+#define gcd(a,b) __gcd(a,b)
+#define lcm(a,b) a*b/gcd(a,b)
+#define Case() int _;cin>>_;for(int Case = 1;Case<=_;++Case)
+using namespace std;
+const int N = 1e5+5,inf = 1e15;
+int n,input,water;
+pair<int,int>a[N];
+pair<int,int>tree[N<<2];
+void build(int index,int l,int r){
+	if(l==r){
+		tree[index] = {a[l].first,l};
+		return;
 	}
-	int last_op = 0,l,r,now_size = min(a[m],a[m+1]),last_size = 0;
-	for(l = m,r = m+1;l>=0 and r<n and w>now_size;){
-		while(a[l]<a[r] and w>now_size){
-			last_op = 0;
-			last_size = now_size;
-			l--;
-			if(a[l]>a[l+1]){
-				now_size = min(a[l],a[r])*(r-l);
-			}
-			else{
-				now_size+=a[l];
-			}
-		}
-		while(a[r]<a[l] and w>now_size){
-			last_op = 1;
-			last_size = now_size;
-			r++;
-			if(a[r]>a[r-1]){
-				now_size = min(a[l],a[r])*(r-l);
-			}
-			else{
-				now_size+=a[r];
-			}
-		}
-	}
-	if(!last_op){
-		ans[l] = w-last_size;
-		l++;
+	int m = (l+r)/2;
+	build(index*2,l,m);
+	build(index*2+1,m+1,r);
+	if(tree[index*2].first>tree[index*2+1].first){
+		tree[index] = tree[index*2];
 	}
 	else{
-		r--;
-		ans[r] = w-last_size;
+		tree[index] = tree[index*2+1];
 	}
-	for(int i = l;i<=r;++i){
-		v.pb({a[i],i});
+}
+pair<int,int> query(int ql,int qr,int index = 1,int l = 0,int r = n-1){
+	if(qr<l or ql>r)return {-inf,-inf};
+	if(ql<=l and r<=qr)return tree[index];
+	int m = (l+r)/2;
+	pair<int,int>a,b;
+	a = query(ql,qr,index*2,l,m),b = query(ql,qr,index*2+1,m+1,r);
+	if(a.first>b.first)return a;
+	return b;
+}
+void sol(int l,int r,int w,int in){
+	if(r-l<=1){
+		a[l].second = w;
+		return;
 	}
-	sort(v.begin(),v.end(),greater<>());
-	for(int i = 0;i<v.size()-1;++i){
-		if(v[i].second>v[i+1].second){
-			v[i+1].second = v[i].second;
+	pair<int,int>h = query(l+1,r-1);
+	if(w>=(r-l)*h.first){
+		rep(i,l,r-1){
+			a[i].second = w/(r-l);
 		}
-		for(int j = v[i].second;j<v[i+1].second;++j){
-			ans[j] = min(a[v[i].second],a[v[i+1].second]);
+	}
+	else if(h.second>in){
+		int tmp_w = (h.second-l)*(h.first);
+		if(w<tmp_w){
+			sol(l,h.second,w,in);
+			return;
+		}
+		rep(i,l,h.second-1){
+			a[i].second = h.first;
+		}
+		if(w>tmp_w){
+			sol(h.second,r,w-tmp_w,h.second);
 		}
 	}
-	for(int i = 0;i<n-1;++i){
-		cout<<ans[i]<<' ';
+	else{
+		int tmp_w = (r-h.second)*(h.first);
+		if(w<tmp_w){
+			sol(h.second,r,w,in);
+			return;
+		}
+		rep(i,h.second,r-1){
+			a[i].second = h.first;
+		}
+		if(w>tmp_w){
+			sol(l,h.second,w-tmp_w,h.second-1);
+		}
 	}
-	cout<<endl;
+}
+signed main(){
+	IOS;
+	cin>>n>>input>>water;
+	rep(i,0,n-1){
+		cin>>a[i].first;
+		a[i].second = 0;
+	}
+	build(1,0,n-1);
+	sol(0,n-1,water,input);
+	rep(i,0,n-2)cout<<a[i].second<<' ';
 }
