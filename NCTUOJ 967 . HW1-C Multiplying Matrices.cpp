@@ -26,8 +26,8 @@ template <typename ...T> void qqbx(const char *s, T ...args) {
 #define Case() int _;cin>>_;for(int Case = 1;Case<=_;++Case)
 using namespace std;
 struct matrix{
-	int M[3000][3000];
 	int n,m;
+	int M[3000][3000];
 	matrix(int n = 0,int m = 0):n(n),m(m){
 		for(int i = 0;i<n;++i){
 			for(int j = 0;j<m;++j){
@@ -72,6 +72,7 @@ matrix merge(matrix a,matrix b,matrix c,matrix d){
 	return tmp;
 }
 matrix build(int n,int op){
+	cout<<n<<' '<<op<<endl;
 	matrix ans;
 	if(n==2){
 		matrix tmp(2,2);
@@ -98,7 +99,7 @@ signed main(){
 	IOS;
 	int n;
 	cin>>n;
-	matrix a(n,n),h(n,n);
+	matrix a(n,n),h;
 	for(int i = 0;i<n;++i){
 		for(int j = 0;j<n;++j){
 			cin>>a.M[i][j];
