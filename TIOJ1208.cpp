@@ -3,8 +3,8 @@
 #pragma GCC target("abm,bmi,bmi2,mmx,sse,sse2,sse3,ssse3,sse4,popcnt,avx,avx2,fma,tune=native")
 #pragma comment(linker, "/stack:200000000")
 #ifdef local
-#define debug(args...) qqbx(#args, args)
-template <typename ...T> void qqbx(const char *s, T ...args) {
+#define debug(args...) f(#args, args)
+template <typename ...T> void f(const char *s, T ...args) {
     int cnt = sizeof...(T);
     ((std::cerr << "(" << s << ") = (") , ... , (std::cerr << args << (--cnt ? ", " : ")\n")));
 }
