@@ -66,22 +66,6 @@ pii query(int index,int l,int r,int ql,int qr){
 		return tmp2;
 	}
 }
-void sol(int l,int r){
-	if(l>r)return;
-	if(l==r){
-		cout<<a[l].first<<endl;
-		return;
-	}
-	pii mn = query(1,1,n,l,r);
-	int sum1 = s[mn.second-1] - s[l-1];
-	int sum2 = s[r] - s[mn.second];
-	if(sum1>sum2){
-		sol(l,mn.second-1);
-	}
-	else{
-		sol(mn.second+1,r);
-	}
-}
 signed main(){
 	IOS;
 	cin>>n;
@@ -91,5 +75,16 @@ signed main(){
 		s[i] = s[i-1]+t;
 	}
 	build();
-	sol(1,n);
+	int l = 1,r = n;
+	while(l<r){
+		pii mn = query(1,1,n,l,r);
+		int sum1 = s[mn.second-1]-s[l-1],sum2 = s[r]-s[mn.second];
+		if(sum1>sum2){
+			r = mn.second-1;
+		}
+		else{
+			l = mn.second+1;
+		}
+	}
+	cout<<a[l].first<<endl;
 }
